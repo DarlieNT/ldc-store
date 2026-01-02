@@ -52,7 +52,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
                 toast.success(t('common.announcementCreated'))
             }
             form.reset()
-            setOpen(false)
+            handleCloseDialog(false)
             router.refresh()
         } catch (error: any) {
             toast.error(error.message || (editingAnnouncement ? t('common.updateFailed') : t('common.createFailed')))
@@ -66,9 +66,11 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
         setOpen(true)
     }
 
-    const handleCloseDialog = () => {
-        setOpen(false)
-        setEditingAnnouncement(null)
+    const handleCloseDialog = (isOpen: boolean) => {
+        setOpen(isOpen)
+        if (!isOpen) {
+            setEditingAnnouncement(null)
+        }
     }
 
     const handleDelete = async (id: number) => {
@@ -113,7 +115,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
 
                 <Dialog open={open} onOpenChange={handleCloseDialog}>
                     <DialogTrigger asChild>
-                        <Button className="h-9 sm:h-10 shrink-0" onClick={() => setEditingAnnouncement(null)}>
+                        <Button className="h-9 sm:h-10 shrink-0">
                             <Plus className="h-4 w-4 sm:mr-2" />
                             <span className="hidden sm:inline">{t('common.createAnnouncement')}</span>
                         </Button>
@@ -152,7 +154,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={handleCloseDialog}
+                                    onClick={() => handleCloseDialog(false)}
                                     disabled={loading}
                                 >
                                     {t('common.cancel')}
