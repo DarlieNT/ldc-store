@@ -4,15 +4,28 @@
 
 A modern virtual goods shop built with Next.js 16, React 19, Tailwind CSS 4, and Shadcn UI.
 
-## Features
+## ✨ Features
 
-- **Modern Stack** - Next.js 16 App Router + React 19 + TypeScript
-- **Beautiful UI** - Tailwind CSS 4 + Shadcn UI components
+### 🎨 User Interface
+- **Modern Design** - Beautiful gradient backgrounds, smooth animations, responsive layout
+- **Dark Mode** - Full support for light/dark theme switching
+- **Sidebar Navigation** - Collapsible sidebar with elegant navigation experience
+- **Smooth Animations** - Page transitions, hover effects, seamless interactions
+
+### 🛠️ Core Features
+- **Product Management** - CRUD operations, inventory control, card key management, sorting
+- **Order System** - Auto-delivery, order tracking, refund processing
+- **Announcement System** - Publish system announcements, real-time viewing, unread notifications
+- **Site Settings** - Customize site name, description, footer text
+- **User Authentication** - Linux DO OAuth login, secure and reliable
+- **Payment Integration** - Linux DO Credit payment
+
+### 🌐 Tech Stack
+- **Frontend Framework** - Next.js 16 App Router + React 19 + TypeScript
+- **UI Components** - Tailwind CSS 4 + Shadcn UI + Lucide Icons
 - **Database** - Drizzle ORM + Vercel Postgres
 - **Authentication** - NextAuth 5 + Linux DO Connect (OIDC)
-- **Payment** - Linux DO Credit (EPay)
-- **i18n** - English and Chinese support
-- **Admin Dashboard** - Products, inventory, orders, site settings
+- **Internationalization** - Full English and Chinese translation support
 
 ## Quick Deploy
 
@@ -63,34 +76,90 @@ npx drizzle-kit push
 npm run dev
 ```
 
-## Important Notes
+## 📋 Feature List
+
+### User Features
+- ✅ Browse and search products
+- ✅ One-click purchase and payment
+- ✅ Order query and management
+- ✅ View system announcements
+- ✅ Dark mode toggle
+- ✅ English/Chinese language switch
+
+### Admin Dashboard
+- ✅ Product management (add/edit/delete/publish)
+- ✅ Inventory management (bulk import card keys, view usage status)
+- ✅ Order management (view orders, process refunds)
+- ✅ Announcement management (create/edit/delete announcements)
+- ✅ Site settings (customize site information)
+- ✅ Data statistics (today/week/month orders)
+
+## ⚠️ Important Notes
 
 **Custom Domain Required**
 
 Do not use `*.vercel.app` domains - payment callbacks will be blocked. Bind a custom domain in Vercel dashboard.
 
-**Refund Feature**
+**Refund Process**
 
-Due to Linux DO Credit WAF restrictions, refunds must be completed manually in browser then marked as refunded.
+Due to Linux DO Credit WAF restrictions, refunds require manual completion in browser:
+1. Click "Refund" button in admin dashboard
+2. Complete refund operation in the new tab
+3. After confirming refund success, click "Mark as Refunded"
 
-## Project Structure
+**Database Initialization**
+
+Database tables will be created automatically on first deployment. For manual initialization, run:
+```bash
+npx drizzle-kit push
+```
+
+## 📁 Project Structure
 
 ```
 src/
-├── app/                # Next.js pages
-│   ├── admin/          # Admin dashboard
-│   └── api/            # API routes
-├── components/         # React components
-│   ├── admin/          # Admin components
-│   ├── ui/             # UI base components
-│   └── icons/          # Icon components
-├── lib/                # Utilities
-│   ├── db/             # Database
-│   └── i18n/           # Internationalization
-├── actions/            # Server Actions
-└── locales/            # Translation files
+├── app/                    # Next.js App Router pages
+│   ├── (main)/            # Main application route group
+│   ├── admin/             # Admin dashboard
+│   │   ├── announcements/ # Announcement management
+│   │   ├── cards/         # Card key management
+│   │   ├── orders/        # Order management
+│   │   ├── settings/      # Site settings
+│   │   └── product/       # Product editing
+│   ├── api/               # API routes
+│   │   ├── auth/          # Authentication
+│   │   └── notify/        # Payment callbacks
+│   └── auth/              # Sign-in page
+├── components/            # React components
+│   ├── admin/             # Admin dashboard components
+│   ├── ui/                # Shadcn UI components
+│   └── icons/             # Icon components
+├── lib/                   # Utilities
+│   ├── db/                # Database config and queries
+│   └── i18n/              # Internationalization config
+├── actions/               # Server Actions
+└── locales/               # Translation files (zh.json, en.json)
 ```
 
-## License
+## 🎨 UI Components
 
-MIT
+Built with Shadcn UI, includes:
+- Button, Card, Badge, Input, Textarea
+- Dialog, DropdownMenu, ScrollArea
+- Avatar, Label, Table
+- Custom animations and transitions
+
+## 🤝 Contributing
+
+Issues and Pull Requests are welcome!
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details
+
+## 🙏 Credits
+
+- [Next.js](https://nextjs.org/) - React framework
+- [Shadcn UI](https://ui.shadcn.com/) - UI component library
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [Linux DO](https://linux.do/) - Authentication and payment services

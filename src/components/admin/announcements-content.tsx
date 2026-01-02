@@ -17,6 +17,7 @@ import {
 import { Plus, Trash2, Eye, EyeOff } from 'lucide-react'
 import { createAnnouncementAction, deleteAnnouncementAction, toggleAnnouncementAction } from '@/actions/admin'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 interface Announcement {
     id: number
@@ -29,6 +30,7 @@ interface Announcement {
 
 export function AnnouncementsContent({ announcements }: { announcements: Announcement[] }) {
     const { t, locale } = useI18n()
+    const router = useRouter()
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -43,7 +45,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
             toast.success(t('common.announcementCreated'))
             form.reset()
             setOpen(false)
-            window.location.reload()
+            router.refresh()
         } catch (error: any) {
             toast.error(error.message || t('common.createFailed'))
         } finally {
@@ -57,7 +59,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
         try {
             await deleteAnnouncementAction(id)
             toast.success(t('common.announcementDeleted'))
-            window.location.reload()
+            router.refresh()
         } catch (error: any) {
             toast.error(error.message || t('common.deleteFailed'))
         }
@@ -67,7 +69,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
         try {
             await toggleAnnouncementAction(id, !isActive)
             toast.success(isActive ? t('common.announcementHidden') : t('common.announcementShown'))
-            window.location.reload()
+            router.refresh()
         } catch (error: any) {
             toast.error(error.message || t('common.operationFailed'))
         }

@@ -3,6 +3,22 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Page transition animations */
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: page-fade-in 0.3s ease-out;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -185,12 +201,18 @@
 
 /* Smooth transitions */
 * {
-  transition-property: background-color, border-color, color, fill, stroke;
+  transition-property: background-color, border-color, color, fill, stroke, opacity;
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Remove transitions for specific elements */
-button, a, [role="button"] {
+/* Enhanced transitions for interactive elements */
+button, a, [role="button"], input, textarea, select {
   transition-property: all;
+  transition-duration: 200ms;
+}
+
+/* Smooth hover effects */
+button:hover, a:hover, [role="button"]:hover {
+  transition-duration: 150ms;
 }

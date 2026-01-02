@@ -79,9 +79,10 @@ interface AppLayoutProps {
     } | null
     isAdmin?: boolean
     announcements?: Announcement[]
+    settings?: Record<string, string>
 }
 
-export function AppLayout({ children, user, isAdmin, announcements = [] }: AppLayoutProps) {
+export function AppLayout({ children, user, isAdmin, announcements = [], settings = {} }: AppLayoutProps) {
     const [collapsed, setCollapsed] = useState(false)
     const pathname = usePathname()
     const { t, locale, setLocale } = useI18n()
@@ -144,7 +145,7 @@ export function AppLayout({ children, user, isAdmin, announcements = [] }: AppLa
                                 "flex flex-col transition-all duration-300 overflow-hidden",
                                 collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
                             )}>
-                                <span className="font-semibold text-foreground text-sm whitespace-nowrap">LDC Shop</span>
+                                <span className="font-semibold text-foreground text-sm whitespace-nowrap">{settings.siteName || 'LDC Shop'}</span>
                                 <span className="text-xs text-muted-foreground whitespace-nowrap">{user?.username || t('common.guest')}</span>
                             </div>
                         </Link>
@@ -168,8 +169,8 @@ export function AppLayout({ children, user, isAdmin, announcements = [] }: AppLa
                                             key={item.href}
                                             href={item.href}
                                             className={cn(
-                                                "flex items-center gap-3 rounded-lg transition-all duration-200",
-                                                collapsed ? "px-3 py-2.5 justify-center" : "px-3 py-2.5",
+                                                "flex items-center rounded-lg transition-all duration-200",
+                                                collapsed ? "px-0 py-2.5 justify-center" : "px-3 py-2.5 gap-3",
                                                 isActive(item)
                                                     ? "bg-primary/10 text-primary font-medium"
                                                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -196,8 +197,8 @@ export function AppLayout({ children, user, isAdmin, announcements = [] }: AppLa
                             <button
                                 onClick={() => signOut({ callbackUrl: '/' })}
                                 className={cn(
-                                    "flex items-center gap-3 w-full rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors",
-                                    collapsed ? "px-3 py-2.5 justify-center" : "px-3 py-2.5"
+                                    "flex items-center w-full rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors",
+                                    collapsed ? "px-0 py-2.5 justify-center" : "px-3 py-2.5 gap-3"
                                 )}
                                 title={collapsed ? t('common.logout') : undefined}
                             >
@@ -213,8 +214,8 @@ export function AppLayout({ children, user, isAdmin, announcements = [] }: AppLa
                         <button
                             onClick={() => setCollapsed(!collapsed)}
                             className={cn(
-                                "flex items-center gap-3 w-full rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors",
-                                collapsed ? "px-3 py-2.5 justify-center" : "px-3 py-2.5"
+                                "flex items-center w-full rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors",
+                                collapsed ? "px-0 py-2.5 justify-center" : "px-3 py-2.5 gap-3"
                             )}
                         >
                             {collapsed ? (
@@ -345,7 +346,7 @@ export function AppLayout({ children, user, isAdmin, announcements = [] }: AppLa
                     </header>
 
                     {/* Page Content */}
-                    <main className="min-h-[calc(100vh-3.5rem)]">
+                    <main className="min-h-[calc(100vh-3.5rem)] page-transition">
                         {children}
                     </main>
                 </div>

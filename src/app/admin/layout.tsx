@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth"
 import { notFound } from "next/navigation"
 import { AppLayout } from "@/components/app-layout"
-import { getActiveAnnouncements } from "@/lib/db/queries"
+import { getActiveAnnouncements, getAllSiteSettings } from "@/lib/db/queries"
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
     const session = await auth()
@@ -13,16 +13,20 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         return notFound()
     }
 
-    // Get announcements
+    // Get announcements and settings
     let announcements: any[] = []
+    let settings: Record<string, string> = {}
     try {
-        announcements = await getActiveAnnouncements()
+        [announcements, settings] = await Promise.all([
+            getActiveAnnouncements(),
+            getAllSiteSettings()
+        ])
     } catch (error) {
-        console.error('Failed to load announcements:', error)
+        console.error('Failed to load data:', error)
     }
 
     return (
-        <AppLayout user={user} isAdmin={true} announcements={announcements}>
+        <AppLayout user={user} isAdmin={true} announcements={announcements} settings={settings}>
             {children}
         </AppLayout>
     )

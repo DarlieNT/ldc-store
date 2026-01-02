@@ -10,6 +10,7 @@ import { saveSiteSettings } from "@/actions/admin"
 import { toast } from "sonner"
 import { useState } from "react"
 import { Settings, Save, Loader2, Globe, Type, FileText } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface SettingsContentProps {
     settings: Record<string, string>
@@ -17,6 +18,7 @@ interface SettingsContentProps {
 
 export function SettingsContent({ settings }: SettingsContentProps) {
     const { t } = useI18n()
+    const router = useRouter()
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (formData: FormData) => {
@@ -24,8 +26,7 @@ export function SettingsContent({ settings }: SettingsContentProps) {
         try {
             await saveSiteSettings(formData)
             toast.success(t('common.success'))
-            // Force router refresh to show updated data
-            window.location.reload()
+            router.refresh()
         } catch (e: any) {
             toast.error(e.message || t('common.error'))
         } finally {
