@@ -68,6 +68,7 @@ interface Announcement {
     id: number
     title: string
     content: string
+    isPinned: boolean | null
     createdAt: Date | null
 }
 
