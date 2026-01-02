@@ -25,13 +25,13 @@ export function LanguageSwitcher() {
                     onClick={() => setLocale('en')}
                     className={locale === 'en' ? 'bg-primary/10 text-primary' : ''}
                 >
-                    English
+                    {t('common.english')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={() => setLocale('zh')}
                     className={locale === 'zh' ? 'bg-primary/10 text-primary' : ''}
                 >
-                    中文
+                    {t('common.chinese')}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

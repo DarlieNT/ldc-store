@@ -74,11 +74,13 @@ function ProductBuyButton({ productId, disabled }: { productId: string; disabled
 export function DashboardContent({
     products,
     stats,
-    isLoggedIn = false
+    isLoggedIn = false,
+    isAdmin = false
 }: {
     products: Product[]
     stats: Stats
     isLoggedIn?: boolean
+    isAdmin?: boolean
 }) {
     const { t } = useI18n()
 
@@ -86,76 +88,78 @@ export function DashboardContent({
         <div className="p-6 space-y-8">
             {/* Page Title */}
             <div>
-                <h1 className="text-2xl font-bold text-foreground">今天</h1>
-                <p className="text-muted-foreground text-sm mt-1">欢迎来到 LDC Shop</p>
+                <h1 className="text-2xl font-bold text-foreground">{t('common.today')}</h1>
+                <p className="text-muted-foreground text-sm mt-1">{t('common.welcome')}</p>
             </div>
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="border-border/40">
-                    <CardContent className="p-5">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">今日订单</p>
-                                <p className="text-2xl font-bold mt-1">{stats.today}</p>
+            {/* Stats Overview - Only for Admin */}
+            {isAdmin && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card className="border-border/40">
+                        <CardContent className="p-5">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground">{t('common.todayOrders')}</p>
+                                    <p className="text-2xl font-bold mt-1">{stats.today}</p>
+                                </div>
+                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <ShoppingCart className="h-5 w-5 text-primary" />
+                                </div>
                             </div>
-                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                <ShoppingCart className="h-5 w-5 text-primary" />
+                        </CardContent>
+                    </Card>
+                    <Card className="border-border/40">
+                        <CardContent className="p-5">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground">{t('common.weekOrders')}</p>
+                                    <p className="text-2xl font-bold mt-1">{stats.week}</p>
+                                </div>
+                                <div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                                    <TrendingUp className="h-5 w-5 text-emerald-500" />
+                                </div>
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="border-border/40">
-                    <CardContent className="p-5">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">本周订单</p>
-                                <p className="text-2xl font-bold mt-1">{stats.week}</p>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-border/40">
+                        <CardContent className="p-5">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground">{t('common.monthOrders')}</p>
+                                    <p className="text-2xl font-bold mt-1">{stats.month}</p>
+                                </div>
+                                <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
+                                    <Clock className="h-5 w-5 text-amber-500" />
+                                </div>
                             </div>
-                            <div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                                <TrendingUp className="h-5 w-5 text-emerald-500" />
+                        </CardContent>
+                    </Card>
+                    <Card className="border-border/40">
+                        <CardContent className="p-5">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-muted-foreground">{t('common.productCount')}</p>
+                                    <p className="text-2xl font-bold mt-1">{products.length}</p>
+                                </div>
+                                <div className="h-10 w-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+                                    <Package className="h-5 w-5 text-purple-500" />
+                                </div>
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="border-border/40">
-                    <CardContent className="p-5">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">本月订单</p>
-                                <p className="text-2xl font-bold mt-1">{stats.month}</p>
-                            </div>
-                            <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center">
-                                <Clock className="h-5 w-5 text-amber-500" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="border-border/40">
-                    <CardContent className="p-5">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm text-muted-foreground">商品数量</p>
-                                <p className="text-2xl font-bold mt-1">{products.length}</p>
-                            </div>
-                            <div className="h-10 w-10 rounded-full bg-purple-500/10 flex items-center justify-center">
-                                <Package className="h-5 w-5 text-purple-500" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
 
             {/* Products Section */}
             <div>
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                        <h2 className="text-lg font-semibold">商品列表</h2>
+                        <h2 className="text-lg font-semibold">{t('common.productList')}</h2>
                         <Badge variant="secondary" className="font-normal">{products.length}</Badge>
                     </div>
                     <Button variant="ghost" size="sm" className="text-muted-foreground gap-2">
                         <RefreshCw className="h-4 w-4" />
-                        刷新
+                        {t('common.refresh')}
                     </Button>
                 </div>
 
@@ -177,12 +181,12 @@ export function DashboardContent({
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-border/40 bg-muted/30">
-                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">商品</th>
-                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">价格</th>
-                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">库存</th>
-                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">已售</th>
-                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">状态</th>
-                                        <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">操作</th>
+                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{t('common.products')}</th>
+                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{t('admin.products.price')}</th>
+                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{t('common.stock')}</th>
+                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{t('common.sold')}</th>
+                                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">{t('common.status')}</th>
+                                        <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">{t('common.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -235,7 +239,7 @@ export function DashboardContent({
                                                             : "bg-gray-500/10 text-gray-500 border-0"
                                                         }
                                                     >
-                                                        {inStock ? '有货' : '缺货'}
+                                                        {inStock ? t('common.inStock') : t('common.outOfStock')}
                                                     </Badge>
                                                 </td>
                                                 <td className="py-3 px-4">
@@ -250,7 +254,7 @@ export function DashboardContent({
                                                                 <ProductBuyButton productId={product.id} />
                                                             ) : (
                                                                 <Button size="sm" variant="secondary" disabled>
-                                                                    缺货
+                                                                    {t('common.outOfStock')}
                                                                 </Button>
                                                             )
                                                         ) : (

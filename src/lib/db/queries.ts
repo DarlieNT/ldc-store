@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { products, cards, orders, siteSettings } from "./schema";
+import { products, cards, orders, siteSettings, announcements } from "./schema";
 import { eq, sql, desc, and, asc, gte } from "drizzle-orm";
 
 export async function getProducts() {
@@ -142,5 +142,45 @@ export async function getOrderStats() {
             total: 0
         };
     }
+}
+
+// Announcements
+export async function getActiveAnnouncements() {
+    try {
+        return await db.select()
+            .from(announcements)
+            .where(eq(announcements.isActive, true))
+            .orderBy(desc(announcements.createdAt))
+            .limit(10);
+    } catch (error) {
+        return [];
+    }
+}
+
+export async function getAllAnnouncements() {
+    try {
+        return await db.select()
+            .from(announcements)
+            .orderBy(desc(announcements.createdAt));
+    } catch (error) {
+        return [];
+    }
+}
+
+export async function createAnnouncement(title: string, content: string) {
+    return await db.insert(announcements)
+        .values({ title, content, isActive: true })
+        .returning();
+}
+
+export async function deleteAnnouncement(id: number) {
+    return await db.delete(announcements)
+        .where(eq(announcements.id, id));
+}
+
+export async function toggleAnnouncementStatus(id: number, isActive: boolean) {
+    return await db.update(announcements)
+        .set({ isActive, updatedAt: new Date() })
+        .where(eq(announcements.id, id));
 }
 

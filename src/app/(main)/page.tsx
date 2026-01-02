@@ -8,6 +8,10 @@ export default async function Home() {
     const session = await auth()
     const isLoggedIn = !!session?.user
 
+    // Check if admin
+    const adminUsers = process.env.ADMIN_USERS?.toLowerCase().split(',') || []
+    const isAdmin = session?.user?.username && adminUsers.includes(session.user.username.toLowerCase()) || false
+
     let products: any[] = []
     let stats = { today: 0, week: 0, month: 0, total: 0 }
 
@@ -67,6 +71,14 @@ export default async function Home() {
                     value TEXT NOT NULL,
                     updated_at TIMESTAMP DEFAULT NOW()
                 );
+                CREATE TABLE IF NOT EXISTS announcements (
+                    id SERIAL PRIMARY KEY,
+                    title TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    is_active BOOLEAN DEFAULT TRUE,
+                    created_at TIMESTAMP DEFAULT NOW(),
+                    updated_at TIMESTAMP DEFAULT NOW()
+                );
             `)
 
             products = await getActiveProducts()
@@ -85,6 +97,7 @@ export default async function Home() {
             }))}
             stats={stats}
             isLoggedIn={isLoggedIn}
+            isAdmin={isAdmin}
         />
     )
 }

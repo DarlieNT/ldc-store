@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { products, cards, siteSettings } from "@/lib/db/schema"
+import { products, cards, siteSettings, announcements } from "@/lib/db/schema"
 import { eq, sql } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
@@ -126,4 +126,47 @@ export async function saveSiteSettings(formData: FormData) {
     revalidatePath('/admin')
     revalidatePath('/admin/settings')
     revalidatePath('/')
+}
+
+// Announcements
+export async function createAnnouncementAction(formData: FormData) {
+    await checkAdmin()
+
+    const title = formData.get('title') as string
+    const content = formData.get('content') as string
+
+    if (!title || !content) {
+        throw new Error('Title and content are required')
+    }
+
+    await db.insert(announcements).values({
+        title,
+        content,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+    })
+
+    revalidatePath('/')
+    revalidatePath('/admin')
+}
+
+export async function deleteAnnouncementAction(id: number) {
+    await checkAdmin()
+
+    await db.delete(announcements).where(eq(announcements.id, id))
+
+    revalidatePath('/')
+    revalidatePath('/admin')
+}
+
+export async function toggleAnnouncementAction(id: number, isActive: boolean) {
+    await checkAdmin()
+
+    await db.update(announcements)
+        .set({ isActive, updatedAt: new Date() })
+        .where(eq(announcements.id, id))
+
+    revalidatePath('/')
+    revalidatePath('/admin')
 }

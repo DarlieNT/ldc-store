@@ -47,6 +47,16 @@ export const siteSettings = pgTable('site_settings', {
     updatedAt: timestamp('updated_at').defaultNow(),
 });
 
+// Announcements
+export const announcements = pgTable('announcements', {
+    id: serial('id').primaryKey(),
+    title: text('title').notNull(),
+    content: text('content').notNull(),
+    isActive: boolean('is_active').default(true),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
+});
+
 // NextAuth Tables (Optional, if using adapter)
 /*
    We will likely manage users via NextAuth standard schema if we use the adapter,

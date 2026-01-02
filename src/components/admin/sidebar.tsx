@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Package, CreditCard, LogOut, LayoutDashboard, Settings, ChevronLeft, User, Home } from "lucide-react"
+import { Package, CreditCard, LogOut, LayoutDashboard, Settings, ChevronLeft, User, Home, Bell } from "lucide-react"
 import { useI18n } from "@/lib/i18n/context"
 import { signOut } from "next-auth/react"
 import { cn } from "@/lib/utils"
@@ -24,6 +24,7 @@ export function AdminSidebar({ username, avatar }: { username: string; avatar?: 
     const navItems: NavItem[] = [
         { href: "/admin", icon: LayoutDashboard, label: t('common.dashboardProducts'), exact: true },
         { href: "/admin/orders", icon: CreditCard, label: t('common.ordersRefunds') },
+        { href: "/admin/announcements", icon: Bell, label: t('common.announcementManagement') },
         { href: "/admin/settings", icon: Settings, label: t('admin.settings.title') || 'Settings' },
     ]
 

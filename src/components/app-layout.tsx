@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { useI18n } from '@/lib/i18n/context'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Input } from '@/components/ui/input'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,7 +17,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import {
     Home,
-    Store,
     ShoppingCart,
     FileText,
     Settings,
@@ -26,7 +26,6 @@ import {
     User,
     Package,
     Search,
-    Bell,
     Plus,
     Moon,
     Sun,
@@ -34,6 +33,7 @@ import {
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { Logo } from '@/components/icons/logo'
+import { AnnouncementButton } from '@/components/announcement-button'
 
 // Sidebar Context
 interface SidebarContextType {
@@ -61,6 +61,13 @@ interface NavSection {
     items: NavItem[]
 }
 
+interface Announcement {
+    id: number
+    title: string
+    content: string
+    createdAt: Date | null
+}
+
 interface AppLayoutProps {
     children: ReactNode
     user?: {
@@ -70,27 +77,28 @@ interface AppLayoutProps {
         avatar_url?: string | null
     } | null
     isAdmin?: boolean
+    announcements?: Announcement[]
 }
 
-export function AppLayout({ children, user, isAdmin }: AppLayoutProps) {
+export function AppLayout({ children, user, isAdmin, announcements = [] }: AppLayoutProps) {
     const [collapsed, setCollapsed] = useState(false)
     const pathname = usePathname()
     const { t, locale, setLocale } = useI18n()
     const { theme, setTheme } = useTheme()
     const [searchFocused, setSearchFocused] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
 
     const mainNav: NavSection[] = [
         {
             items: [
-                { href: '/', icon: Home, label: '首页', exact: true },
-                { href: '/market', icon: Store, label: '集市' },
+                { href: '/', icon: Home, label: t('common.home'), exact: true },
             ]
         }
     ]
 
     if (user) {
         mainNav.push({
-            title: '我的',
+            title: t('common.myAccount'),
             items: [
                 { href: '/orders', icon: ShoppingCart, label: t('common.myOrders') },
             ]
@@ -99,11 +107,11 @@ export function AppLayout({ children, user, isAdmin }: AppLayoutProps) {
 
     if (isAdmin) {
         mainNav.push({
-            title: t('common.management') || '管理',
+            title: t('common.management'),
             items: [
-                { href: '/admin', icon: Package, label: '商品管理', exact: true },
-                { href: '/admin/orders', icon: FileText, label: '订单管理' },
-                { href: '/admin/settings', icon: Settings, label: '设置' },
+                { href: '/admin', icon: Package, label: t('common.products'), exact: true },
+                { href: '/admin/orders', icon: FileText, label: t('common.orders') },
+                { href: '/admin/settings', icon: Settings, label: t('admin.settings.title') || 'Settings' },
             ]
         })
     }
@@ -135,7 +143,7 @@ export function AppLayout({ children, user, isAdmin }: AppLayoutProps) {
                                 collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
                             )}>
                                 <span className="font-semibold text-foreground text-sm whitespace-nowrap">LDC Shop</span>
-                                <span className="text-xs text-muted-foreground whitespace-nowrap">{user?.username || '访客'}</span>
+                                <span className="text-xs text-muted-foreground whitespace-nowrap">{user?.username || t('common.guest')}</span>
                             </div>
                         </Link>
                     </div>
@@ -212,7 +220,7 @@ export function AppLayout({ children, user, isAdmin }: AppLayoutProps) {
                             ) : (
                                 <>
                                     <ChevronLeft className="h-4 w-4 shrink-0" />
-                                    <span className="text-sm">收起</span>
+                                    <span className="text-sm">{t('common.collapse')}</span>
                                 </>
                             )}
                         </button>
@@ -240,7 +248,7 @@ export function AppLayout({ children, user, isAdmin }: AppLayoutProps) {
                                     <Search className="h-4 w-4 text-muted-foreground shrink-0" />
                                     <input
                                         type="text"
-                                        placeholder="搜索"
+                                        placeholder={t('common.search')}
                                         className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                                         onFocus={() => setSearchFocused(true)}
                                         onBlur={() => setSearchFocused(false)}
@@ -253,9 +261,8 @@ export function AppLayout({ children, user, isAdmin }: AppLayoutProps) {
 
                             {/* Actions */}
                             <div className="flex items-center gap-1">
-                                <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground">
-                                    <Bell className="h-4 w-4" />
-                                </Button>
+                                {/* Announcements */}
+                                <AnnouncementButton announcements={announcements} />
 
                                 <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground" asChild>
                                     <Link href={isAdmin ? "/admin/settings" : "/"}>
@@ -284,12 +291,12 @@ export function AppLayout({ children, user, isAdmin }: AppLayoutProps) {
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" size="sm" className="h-9 px-2 text-muted-foreground hover:text-foreground font-normal">
-                                            {locale === 'zh' ? '中文' : 'EN'}
+                                            {locale === 'zh' ? t('common.chinese') : 'EN'}
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => setLocale('zh')}>中文</DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setLocale('en')}>English</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setLocale('zh')}>{t('common.chinese')}</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setLocale('en')}>{t('common.english')}</DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
 
@@ -327,7 +334,7 @@ export function AppLayout({ children, user, isAdmin }: AppLayoutProps) {
                                     <Button variant="ghost" size="sm" className="h-9 gap-2" asChild>
                                         <Link href="/api/auth/signin">
                                             <LogIn className="h-4 w-4" />
-                                            登录
+                                            {t('common.login')}
                                         </Link>
                                     </Button>
                                 )}

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(npx drizzle-kit push)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npx shadcn@latest add:*)"
     ]
   }
 }
