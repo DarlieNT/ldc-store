@@ -35,56 +35,64 @@ export default async function Home() {
             const { db } = await import("@/lib/db")
             const { sql } = await import("drizzle-orm")
 
-            await db.execute(sql`
-                CREATE TABLE IF NOT EXISTS products (
-                    id TEXT PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    description TEXT,
-                    price DECIMAL(10, 2) NOT NULL,
-                    category TEXT,
-                    image TEXT,
-                    is_active BOOLEAN DEFAULT TRUE,
-                    sort_order INTEGER DEFAULT 0,
-                    created_at TIMESTAMP DEFAULT NOW()
-                );
-                CREATE TABLE IF NOT EXISTS cards (
-                    id SERIAL PRIMARY KEY,
-                    product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
-                    card_key TEXT NOT NULL,
-                    is_used BOOLEAN DEFAULT FALSE,
-                    used_at TIMESTAMP,
-                    created_at TIMESTAMP DEFAULT NOW()
-                );
-                CREATE TABLE IF NOT EXISTS orders (
-                    order_id TEXT PRIMARY KEY,
-                    product_id TEXT NOT NULL,
-                    product_name TEXT NOT NULL,
-                    amount DECIMAL(10, 2) NOT NULL,
-                    email TEXT,
-                    status TEXT DEFAULT 'pending',
-                    trade_no TEXT,
-                    card_key TEXT,
-                    paid_at TIMESTAMP,
-                    delivered_at TIMESTAMP,
-                    user_id TEXT,
-                    username TEXT,
-                    created_at TIMESTAMP DEFAULT NOW()
-                );
-                CREATE TABLE IF NOT EXISTS site_settings (
-                    key TEXT PRIMARY KEY,
-                    value TEXT NOT NULL,
-                    updated_at TIMESTAMP DEFAULT NOW()
-                );
-                CREATE TABLE IF NOT EXISTS announcements (
-                    id SERIAL PRIMARY KEY,
-                    title TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    is_active BOOLEAN DEFAULT TRUE,
-                    is_pinned BOOLEAN DEFAULT FALSE,
-                    created_at TIMESTAMP DEFAULT NOW(),
-                    updated_at TIMESTAMP DEFAULT NOW()
-                );
-            `)
+            const createProductsTable = `CREATE TABLE IF NOT EXISTS products (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                description TEXT,
+                price DECIMAL(10, 2) NOT NULL,
+                category TEXT,
+                image TEXT,
+                is_active BOOLEAN DEFAULT TRUE,
+                sort_order INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT NOW()
+            )`
+
+            const createCardsTable = `CREATE TABLE IF NOT EXISTS cards (
+                id SERIAL PRIMARY KEY,
+                product_id TEXT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+                card_key TEXT NOT NULL,
+                is_used BOOLEAN DEFAULT FALSE,
+                used_at TIMESTAMP,
+                created_at TIMESTAMP DEFAULT NOW()
+            )`
+
+            const createOrdersTable = `CREATE TABLE IF NOT EXISTS orders (
+                order_id TEXT PRIMARY KEY,
+                product_id TEXT NOT NULL,
+                product_name TEXT NOT NULL,
+                amount DECIMAL(10, 2) NOT NULL,
+                email TEXT,
+                status TEXT DEFAULT 'pending',
+                trade_no TEXT,
+                card_key TEXT,
+                paid_at TIMESTAMP,
+                delivered_at TIMESTAMP,
+                user_id TEXT,
+                username TEXT,
+                created_at TIMESTAMP DEFAULT NOW()
+            )`
+
+            const createSiteSettingsTable = `CREATE TABLE IF NOT EXISTS site_settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL,
+                updated_at TIMESTAMP DEFAULT NOW()
+            )`
+
+            const createAnnouncementsTable = `CREATE TABLE IF NOT EXISTS announcements (
+                id SERIAL PRIMARY KEY,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                is_active BOOLEAN DEFAULT TRUE,
+                is_pinned BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW()
+            )`
+
+            await db.execute(sql.raw(createProductsTable))
+            await db.execute(sql.raw(createCardsTable))
+            await db.execute(sql.raw(createOrdersTable))
+            await db.execute(sql.raw(createSiteSettingsTable))
+            await db.execute(sql.raw(createAnnouncementsTable))
 
             [products, stats, settings] = await Promise.all([
                 getActiveProducts(),
