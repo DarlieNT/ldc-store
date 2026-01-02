@@ -173,3 +173,15 @@ export async function toggleAnnouncementAction(id: number, isActive: boolean) {
     revalidatePath('/admin', 'layout')
     revalidatePath('/admin/announcements')
 }
+
+export async function togglePinAnnouncementAction(id: number, isPinned: boolean) {
+    await checkAdmin()
+
+    await db.update(announcements)
+        .set({ isPinned, updatedAt: new Date() })
+        .where(eq(announcements.id, id))
+
+    revalidatePath('/', 'layout')
+    revalidatePath('/admin', 'layout')
+    revalidatePath('/admin/announcements')
+}

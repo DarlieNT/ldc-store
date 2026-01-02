@@ -78,7 +78,10 @@
         "operationFailed": "操作失败",
         "manageSystemAnnouncements": "管理系统公告",
         "enterAnnouncementTitle": "输入公告标题",
-        "enterAnnouncementContent": "输入公告内容"
+        "enterAnnouncementContent": "输入公告内容",
+        "announcementPinned": "公告已置顶",
+        "announcementUnpinned": "已取消置顶",
+        "pinned": "置顶"
     },
     "home": {
         "title": "欢迎来到 LDC 商店",

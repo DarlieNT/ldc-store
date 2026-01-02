@@ -78,7 +78,10 @@
         "operationFailed": "Operation failed",
         "manageSystemAnnouncements": "Manage system announcements",
         "enterAnnouncementTitle": "Enter announcement title",
-        "enterAnnouncementContent": "Enter announcement content"
+        "enterAnnouncementContent": "Enter announcement content",
+        "announcementPinned": "Announcement pinned",
+        "announcementUnpinned": "Announcement unpinned",
+        "pinned": "Pinned"
     },
     "home": {
         "title": "Welcome to LDC Shop",

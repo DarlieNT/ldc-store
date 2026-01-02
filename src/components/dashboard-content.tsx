@@ -75,21 +75,25 @@ export function DashboardContent({
     products,
     stats,
     isLoggedIn = false,
-    isAdmin = false
+    isAdmin = false,
+    settings = {}
 }: {
     products: Product[]
     stats: Stats
     isLoggedIn?: boolean
     isAdmin?: boolean
+    settings?: Record<string, string>
 }) {
-    const { t } = useI18n()
+    const { t, locale } = useI18n()
+    const siteName = settings.siteName || 'LDC Shop'
+    const welcomeText = locale === 'zh' ? `欢迎来到 ${siteName}` : `Welcome to ${siteName}`
 
     return (
         <div className="p-6 space-y-8">
             {/* Page Title */}
             <div>
                 <h1 className="text-2xl font-bold text-foreground">{t('common.today')}</h1>
-                <p className="text-muted-foreground text-sm mt-1">{t('common.welcome')}</p>
+                <p className="text-muted-foreground text-sm mt-1">{welcomeText}</p>
             </div>
 
             {/* Stats Overview - Only for Admin */}

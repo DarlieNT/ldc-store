@@ -14,8 +14,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { Plus, Trash2, Eye, EyeOff } from 'lucide-react'
-import { createAnnouncementAction, deleteAnnouncementAction, toggleAnnouncementAction } from '@/actions/admin'
+import { Plus, Trash2, Eye, EyeOff, Pin, PinOff } from 'lucide-react'
+import { createAnnouncementAction, deleteAnnouncementAction, toggleAnnouncementAction, togglePinAnnouncementAction } from '@/actions/admin'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
@@ -24,6 +24,7 @@ interface Announcement {
     title: string
     content: string
     isActive: boolean | null
+    isPinned: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
 }
@@ -69,6 +70,16 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
         try {
             await toggleAnnouncementAction(id, !isActive)
             toast.success(isActive ? t('common.announcementHidden') : t('common.announcementShown'))
+            router.refresh()
+        } catch (error: any) {
+            toast.error(error.message || t('common.operationFailed'))
+        }
+    }
+
+    const handleTogglePin = async (id: number, isPinned: boolean) => {
+        try {
+            await togglePinAnnouncementAction(id, !isPinned)
+            toast.success(isPinned ? t('common.announcementUnpinned') : t('common.announcementPinned'))
             router.refresh()
         } catch (error: any) {
             toast.error(error.message || t('common.operationFailed'))
@@ -147,6 +158,12 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
                                     <div className="flex-1 space-y-2">
                                         <div className="flex items-center gap-3">
                                             <h3 className="font-semibold text-lg">{announcement.title}</h3>
+                                            {announcement.isPinned && (
+                                                <Badge variant="default" className="bg-amber-500 hover:bg-amber-600">
+                                                    <Pin className="h-3 w-3 mr-1" />
+                                                    {t('common.pinned')}
+                                                </Badge>
+                                            )}
                                             <Badge variant={announcement.isActive ? 'default' : 'secondary'}>
                                                 {announcement.isActive ? t('common.visible') : t('common.hidden')}
                                             </Badge>
@@ -161,6 +178,18 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
                                         )}
                                     </div>
                                     <div className="flex items-center gap-2 shrink-0">
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => handleTogglePin(announcement.id, announcement.isPinned || false)}
+                                            title={announcement.isPinned ? t('common.announcementUnpinned') : t('common.announcementPinned')}
+                                        >
+                                            {announcement.isPinned ? (
+                                                <PinOff className="h-4 w-4" />
+                                            ) : (
+                                                <Pin className="h-4 w-4" />
+                                            )}
+                                        </Button>
                                         <Button
                                             variant="outline"
                                             size="icon"

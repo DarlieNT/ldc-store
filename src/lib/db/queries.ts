@@ -150,7 +150,7 @@ export async function getActiveAnnouncements() {
         return await db.select()
             .from(announcements)
             .where(eq(announcements.isActive, true))
-            .orderBy(desc(announcements.createdAt))
+            .orderBy(desc(announcements.isPinned), desc(announcements.createdAt))
             .limit(10);
     } catch (error) {
         return [];
@@ -161,7 +161,7 @@ export async function getAllAnnouncements() {
     try {
         return await db.select()
             .from(announcements)
-            .orderBy(desc(announcements.createdAt));
+            .orderBy(desc(announcements.isPinned), desc(announcements.createdAt));
     } catch (error) {
         return [];
     }

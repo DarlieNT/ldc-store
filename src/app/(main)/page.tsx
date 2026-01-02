@@ -1,4 +1,4 @@
-import { getActiveProducts, getOrderStats } from "@/lib/db/queries"
+import { getActiveProducts, getOrderStats, getAllSiteSettings } from "@/lib/db/queries"
 import { auth } from "@/lib/auth"
 import { DashboardContent } from "@/components/dashboard-content"
 
@@ -14,10 +14,14 @@ export default async function Home() {
 
     let products: any[] = []
     let stats = { today: 0, week: 0, month: 0, total: 0 }
+    let settings: Record<string, string> = {}
 
     try {
-        products = await getActiveProducts()
-        stats = await getOrderStats()
+        [products, stats, settings] = await Promise.all([
+            getActiveProducts(),
+            getOrderStats(),
+            getAllSiteSettings()
+        ])
     } catch (error: any) {
         const errorString = JSON.stringify(error)
         const isTableMissing =
@@ -76,13 +80,17 @@ export default async function Home() {
                     title TEXT NOT NULL,
                     content TEXT NOT NULL,
                     is_active BOOLEAN DEFAULT TRUE,
+                    is_pinned BOOLEAN DEFAULT FALSE,
                     created_at TIMESTAMP DEFAULT NOW(),
                     updated_at TIMESTAMP DEFAULT NOW()
                 );
             `)
 
-            products = await getActiveProducts()
-            stats = await getOrderStats()
+            [products, stats, settings] = await Promise.all([
+                getActiveProducts(),
+                getOrderStats(),
+                getAllSiteSettings()
+            ])
         } else {
             console.error("Database error:", error)
         }
@@ -98,6 +106,7 @@ export default async function Home() {
             stats={stats}
             isLoggedIn={isLoggedIn}
             isAdmin={isAdmin}
+            settings={settings}
         />
     )
 }

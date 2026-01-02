@@ -7,8 +7,10 @@ import { Logo } from '@/components/icons/logo'
 import { LogIn, ArrowRight } from 'lucide-react'
 import { useI18n } from '@/lib/i18n/context'
 
-export function SignInContent() {
-    const { t } = useI18n()
+export function SignInContent({ settings = {} }: { settings?: Record<string, string> }) {
+    const { t, locale } = useI18n()
+    const siteName = settings.siteName || 'LDC Shop'
+    const welcomeTitle = locale === 'zh' ? `欢迎来到 ${siteName}` : `Welcome to ${siteName}`
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-indigo-950 p-4">
@@ -21,7 +23,7 @@ export function SignInContent() {
                             </div>
                         </div>
                         <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-                            {t('signin.title')}
+                            {welcomeTitle}
                         </h1>
                         <p className="text-muted-foreground">
                             {t('signin.subtitle')}
