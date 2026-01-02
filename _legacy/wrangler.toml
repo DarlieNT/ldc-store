@@ -1,0 +1,15 @@
+name = "ldc-shop"
+main = "worker.js"
+compatibility_date = "2023-01-01"
+
+# Custom Domain (replace with your domain)
+# routes = [
+# 	{ pattern = "your-domain.com", custom_domain = true }
+# ]
+
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "ldc-shop-db"
+database_id = "YOUR_DATABASE_ID_HERE"
+# preview_database_id = "DB" # Use strictly for local dev
