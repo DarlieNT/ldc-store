@@ -94,11 +94,14 @@ export default async function Home() {
             await db.execute(sql.raw(createSiteSettingsTable))
             await db.execute(sql.raw(createAnnouncementsTable))
 
-            [products, stats, settings] = await Promise.all([
+            const result = await Promise.all([
                 getActiveProducts(),
                 getOrderStats(),
                 getAllSiteSettings()
             ])
+            products = result[0]
+            stats = result[1]
+            settings = result[2]
         } else {
             console.error("Database error:", error)
         }
