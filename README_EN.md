@@ -1,94 +1,96 @@
-# LDC Shop (Next.js Edition)
+# LDC Shop
 
-[中文说明](./README.md)
+[中文](./README.md)
 
----
+A modern virtual goods shop built with Next.js 16, React 19, Tailwind CSS 4, and Shadcn UI.
 
-A robust, serverless virtual goods shop built with **Next.js 16**, **Vercel Postgres**, **Shadcn UI**, and **Linux DO Connect**.
+## Features
 
-> 💡 **Also available as Cloudflare Workers version:** [View legacy deployment guide → `_legacy/README.md`](./_legacy/README.md)
+- **Modern Stack** - Next.js 16 App Router + React 19 + TypeScript
+- **Beautiful UI** - Tailwind CSS 4 + Shadcn UI components
+- **Database** - Drizzle ORM + Vercel Postgres
+- **Authentication** - NextAuth 5 + Linux DO Connect (OIDC)
+- **Payment** - Linux DO Credit (EPay)
+- **i18n** - English and Chinese support
+- **Admin Dashboard** - Products, inventory, orders, site settings
 
-## ✨ Features
-- **Modern Stack**: Next.js 16 (App Router), Tailwind CSS, TypeScript.
-- **Vercel Native**: One-click deploy with Vercel Postgres database.
-- **Linux DO Integration**: Built-in OIDC Login and EasyPay support.
-- **Admin Dashboard**: Products, Stock, Orders, and Refunds management.
-
-## 🚀 One-Click Deploy
+## Quick Deploy
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fchatgptuk%2Fldc-shop&env=OAUTH_CLIENT_ID,OAUTH_CLIENT_SECRET,MERCHANT_ID,MERCHANT_KEY,ADMIN_USERS,NEXT_PUBLIC_APP_URL&envDescription=Required%20Environment%20Variables&project-name=ldc-shop&repository-name=ldc-shop&stores=%5B%7B%22type%22%3A%22postgres%22%7D%5D)
 
-Click the button above to deploy your own instance to Vercel.
+Click to deploy to Vercel. Database will be configured automatically.
 
-The database (Vercel Postgres) will be automatically provisioned and linked.
+## Environment Variables
 
-## ⚠️ Important: Custom Domain Required
+| Variable | Description |
+|----------|-------------|
+| `OAUTH_CLIENT_ID` | Linux DO Connect Client ID |
+| `OAUTH_CLIENT_SECRET` | Linux DO Connect Client Secret |
+| `MERCHANT_ID` | Linux DO Credit Merchant ID |
+| `MERCHANT_KEY` | Linux DO Credit Merchant Key |
+| `ADMIN_USERS` | Admin usernames, comma separated |
+| `NEXT_PUBLIC_APP_URL` | Full application URL |
 
-**Do NOT use the default Vercel domain (`*.vercel.app`) for production!**
+## Configuration
 
-Resulting from the shared nature of `vercel.app` domains, they are often flagged by firewalls or payment gateways as low-reputation. This will cause **Payment Callback (Notify) requests to be blocked**, leading to "Payment Success but Order Pending" issues.
+### 1. Linux DO Connect
 
-**Solution:**
-After deployment, you MUST bind a **Custom Domain** (e.g., `store.yourdomain.com`) in the Vercel dashboard and use this domain for `NEXT_PUBLIC_APP_URL` and the payment gateway notification URL.
+Go to [connect.linux.do](https://connect.linux.do) to create an app:
 
-## ⚠️ Important: Refund WAF Issue
+- **Callback URL**: `https://yourdomain.com/api/auth/callback/linuxdo`
 
-The Refund API of Linux DO Credit is strictly protected by Cloudflare WAF. Direct server-side requests may be blocked (403 Forbidden).
+### 2. Linux DO Credit
 
-**Current Workaround:**
-This project uses a **Client-side API call** solution (via Form submission). When an admin clicks the "Refund" button, it opens a new tab and the browser directly calls the Linux DO Credit Refund API. After confirming success from the API response, the admin returns to the system and clicks "Mark Refunded" to update the order status.
+Go to [credit.linux.do](https://credit.linux.do) to create an app:
 
-## ⚙️ Configuration Guide
+- **Callback URI**: `https://yourdomain.com/callback`
+- **Notify URL**: `https://yourdomain.com/api/notify`
 
-The following environment variables are required.
+## Local Development
 
-> **⚠️ NOTE**: 
-> The following configuration uses `store.chatgpt.org.uk` as an example. **Please replace it with your ACTUAL domain when deploying!**
+```bash
+# Install dependencies
+npm install
 
-### 1. Linux DO Connect (OIDC)
-Go to [connect.linux.do](https://connect.linux.do) to create/configure:
+# Link Vercel project
+vercel link
+vercel env pull .env.development.local
 
-*   **App Name**: `LDC Store Next` (or any name)
-*   **App Homepage**: `https://store.chatgpt.org.uk`
-*   **App Description**: `LDC Store Next`
-*   **Callback URL**: `https://store.chatgpt.org.uk/api/auth/callback/linuxdo`
+# Run database migrations
+npx drizzle-kit push
 
-Get **Client ID** and **Client Secret**, and fill them into Vercel Environment Variables as `OAUTH_CLIENT_ID` and `OAUTH_CLIENT_SECRET`.
+# Start dev server
+npm run dev
+```
 
-### 2. EPay (Linux DO Credit)
-Go to [credit.linux.do](https://credit.linux.do) to create/configure:
+## Important Notes
 
-*   **App Name**: `LDC Store Next` (or any name)
-*   **App Address**: `https://store.chatgpt.org.uk`
-*   **Callback URI**: `https://store.chatgpt.org.uk/callback`
-*   **Notify URL**: `https://store.chatgpt.org.uk/api/notify`
+**Custom Domain Required**
 
-Get **Client ID** and **Client Secret**, and fill them into Vercel Environment Variables as `MERCHANT_ID` and `MERCHANT_KEY`.
+Do not use `*.vercel.app` domains - payment callbacks will be blocked. Bind a custom domain in Vercel dashboard.
 
-### 3. Other Variables
-*   **ADMIN_USERS**: Admin usernames, comma separated (e.g., `chatgpt,admin`).
-*   **NEXT_PUBLIC_APP_URL**: Your full app URL (e.g., `https://store.chatgpt.org.uk`).
+**Refund Feature**
 
-## 🛠️ Local Development
+Due to Linux DO Credit WAF restrictions, refunds must be completed manually in browser then marked as refunded.
 
-1.  Clone the repository.
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Link Vercel Project (for Env Vars & DB):
-    ```bash
-    vercel link
-    vercel env pull .env.development.local
-    ```
-4.  Run migrations:
-    ```bash
-    npx drizzle-kit push
-    ```
-5.  Start dev server:
-    ```bash
-    npm run dev
-    ```
+## Project Structure
 
-## 📄 License
+```
+src/
+├── app/                # Next.js pages
+│   ├── admin/          # Admin dashboard
+│   └── api/            # API routes
+├── components/         # React components
+│   ├── admin/          # Admin components
+│   ├── ui/             # UI base components
+│   └── icons/          # Icon components
+├── lib/                # Utilities
+│   ├── db/             # Database
+│   └── i18n/           # Internationalization
+├── actions/            # Server Actions
+└── locales/            # Translation files
+```
+
+## License
+
 MIT
