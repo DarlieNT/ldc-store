@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Bell, X } from 'lucide-react'
+import { Bell, X, Pin } from 'lucide-react'
 import {
     Dialog,
     DialogContent,
@@ -18,6 +18,7 @@ interface Announcement {
     id: number
     title: string
     content: string
+    isPinned: boolean | null
     createdAt: Date | null
 }
 
@@ -79,7 +80,15 @@ export function AnnouncementButton({ announcements }: { announcements: Announcem
                                     className="p-4 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors"
                                 >
                                     <div className="flex items-start justify-between gap-4 mb-2">
-                                        <h3 className="font-semibold text-foreground">{announcement.title}</h3>
+                                        <div className="flex items-center gap-2 flex-1">
+                                            <h3 className="font-semibold text-foreground">{announcement.title}</h3>
+                                            {announcement.isPinned && (
+                                                <Badge variant="default" className="bg-amber-500 hover:bg-amber-600 shrink-0">
+                                                    <Pin className="h-3 w-3 mr-1" />
+                                                    {t('common.pinned')}
+                                                </Badge>
+                                            )}
+                                        </div>
                                         {announcement.createdAt && (
                                             <span className="text-xs text-muted-foreground shrink-0">
                                                 {new Date(announcement.createdAt).toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en-US')}

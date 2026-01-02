@@ -30,7 +30,9 @@ import {
     Moon,
     Sun,
     LogIn,
-    Bell
+    Bell,
+    Menu,
+    X
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { Logo } from '@/components/icons/logo'
@@ -84,6 +86,7 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, user, isAdmin, announcements = [], settings = {} }: AppLayoutProps) {
     const [collapsed, setCollapsed] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const pathname = usePathname()
     const { t, locale, setLocale } = useI18n()
     const { theme, setTheme } = useTheme()
@@ -127,28 +130,49 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
     return (
         <SidebarContext.Provider value={{ collapsed, setCollapsed }}>
             <div className="min-h-screen bg-background">
+                {/* Mobile Overlay */}
+                {mobileMenuOpen && (
+                    <div
+                        className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm lg:hidden"
+                        onClick={() => setMobileMenuOpen(false)}
+                    />
+                )}
+
                 {/* Sidebar */}
                 <aside
                     className={cn(
-                        "fixed left-0 top-0 z-40 h-screen bg-card border-r border-border/40 transition-all duration-300 ease-in-out flex flex-col",
-                        collapsed ? "w-[68px]" : "w-[220px]"
+                        "fixed left-0 top-0 z-50 h-screen bg-card border-r border-border/40 transition-all duration-300 ease-in-out flex flex-col",
+                        // Desktop
+                        "lg:z-40",
+                        collapsed ? "lg:w-[68px]" : "lg:w-[220px]",
+                        // Mobile
+                        "w-[280px]",
+                        mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
                     )}
                 >
                     {/* Logo */}
                     <div className={cn(
-                        "h-14 flex items-center border-b border-border/40 transition-all duration-300",
-                        collapsed ? "px-4 justify-center" : "px-4"
+                        "h-14 flex items-center justify-between border-b border-border/40 transition-all duration-300",
+                        collapsed ? "lg:px-4 lg:justify-center px-4" : "px-4"
                     )}>
-                        <Link href="/" className="flex items-center gap-3 overflow-hidden">
+                        <Link href="/" className="flex items-center gap-3 overflow-hidden" onClick={() => setMobileMenuOpen(false)}>
                             <Logo className="h-7 w-7 text-primary shrink-0" />
                             <div className={cn(
                                 "flex flex-col transition-all duration-300 overflow-hidden",
-                                collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+                                collapsed ? "lg:w-0 lg:opacity-0" : "w-auto opacity-100"
                             )}>
                                 <span className="font-semibold text-foreground text-sm whitespace-nowrap">{settings.siteName || 'LDC Shop'}</span>
                                 <span className="text-xs text-muted-foreground whitespace-nowrap">{user?.username || t('common.guest')}</span>
                             </div>
                         </Link>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden h-8 w-8"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
                     </div>
 
                     {/* Navigation */}
@@ -168,9 +192,10 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                                         <Link
                                             key={item.href}
                                             href={item.href}
+                                            onClick={() => setMobileMenuOpen(false)}
                                             className={cn(
                                                 "flex items-center rounded-lg transition-all duration-200",
-                                                collapsed ? "px-0 py-2.5 justify-center" : "px-3 py-2.5 gap-3",
+                                                collapsed ? "lg:px-0 lg:py-2.5 lg:justify-center px-3 py-2.5 gap-3" : "px-3 py-2.5 gap-3",
                                                 isActive(item)
                                                     ? "bg-primary/10 text-primary font-medium"
                                                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -180,7 +205,7 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                                             <item.icon className="h-4 w-4 shrink-0" />
                                             <span className={cn(
                                                 "text-sm transition-all duration-300 overflow-hidden whitespace-nowrap",
-                                                collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+                                                collapsed ? "lg:w-0 lg:opacity-0" : "w-auto opacity-100"
                                             )}>
                                                 {item.label}
                                             </span>
@@ -198,14 +223,14 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                                 onClick={() => signOut({ callbackUrl: '/' })}
                                 className={cn(
                                     "flex items-center w-full rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors",
-                                    collapsed ? "px-0 py-2.5 justify-center" : "px-3 py-2.5 gap-3"
+                                    collapsed ? "lg:px-0 lg:py-2.5 lg:justify-center px-3 py-2.5 gap-3" : "px-3 py-2.5 gap-3"
                                 )}
                                 title={collapsed ? t('common.logout') : undefined}
                             >
                                 <LogOut className="h-4 w-4 shrink-0" />
                                 <span className={cn(
                                     "text-sm transition-all duration-300 overflow-hidden whitespace-nowrap",
-                                    collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+                                    collapsed ? "lg:w-0 lg:opacity-0" : "w-auto opacity-100"
                                 )}>
                                     {t('common.logout')}
                                 </span>
@@ -214,7 +239,7 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                         <button
                             onClick={() => setCollapsed(!collapsed)}
                             className={cn(
-                                "flex items-center w-full rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors",
+                                "hidden lg:flex items-center w-full rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors",
                                 collapsed ? "px-0 py-2.5 justify-center" : "px-3 py-2.5 gap-3"
                             )}
                         >
@@ -233,11 +258,21 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                 {/* Main Content */}
                 <div className={cn(
                     "transition-all duration-300",
-                    collapsed ? "ml-[68px]" : "ml-[220px]"
+                    collapsed ? "lg:ml-[68px]" : "lg:ml-[220px]"
                 )}>
                     {/* Header */}
                     <header className="sticky top-0 z-30 h-14 bg-background/80 backdrop-blur-md border-b border-border/40">
-                        <div className="h-full px-6 flex items-center justify-between gap-4">
+                        <div className="h-full px-4 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
+                            {/* Mobile Menu Button */}
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="lg:hidden h-9 w-9 shrink-0"
+                                onClick={() => setMobileMenuOpen(true)}
+                            >
+                                <Menu className="h-5 w-5" />
+                            </Button>
+
                             {/* Search */}
                             <div className="flex-1 max-w-md">
                                 <div
@@ -252,7 +287,7 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                                     <input
                                         type="text"
                                         placeholder={t('common.search')}
-                                        className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                                        className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground min-w-0"
                                         onFocus={() => setSearchFocused(true)}
                                         onBlur={() => setSearchFocused(false)}
                                     />
@@ -263,18 +298,18 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                             </div>
 
                             {/* Actions */}
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-0.5 sm:gap-1">
                                 {/* Announcements */}
                                 <AnnouncementButton announcements={announcements} />
 
-                                <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground" asChild>
+                                <Button variant="ghost" size="icon" className="hidden sm:flex h-9 w-9 text-muted-foreground hover:text-foreground" asChild>
                                     <Link href={isAdmin ? "/admin/settings" : "/"}>
                                         <Settings className="h-4 w-4" />
                                     </Link>
                                 </Button>
 
                                 {isAdmin && (
-                                    <Button size="icon" className="h-9 w-9 rounded-full bg-primary hover:bg-primary/90" asChild>
+                                    <Button size="icon" className="hidden sm:flex h-9 w-9 rounded-full bg-primary hover:bg-primary/90" asChild>
                                         <Link href="/admin">
                                             <Plus className="h-4 w-4" />
                                         </Link>
@@ -293,7 +328,7 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
 
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="h-9 px-2 text-muted-foreground hover:text-foreground font-normal">
+                                        <Button variant="ghost" size="sm" className="hidden sm:flex h-9 px-2 text-muted-foreground hover:text-foreground font-normal">
                                             {locale === 'zh' ? t('common.chinese') : 'EN'}
                                         </Button>
                                     </DropdownMenuTrigger>
@@ -317,17 +352,25 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end" className="w-48">
                                             <div className="px-2 py-1.5 border-b border-border mb-1">
-                                                <p className="text-sm font-medium">{user.name}</p>
-                                                <p className="text-xs text-muted-foreground">@{user.username}</p>
+                                                <p className="text-sm font-medium truncate">{user.name}</p>
+                                                <p className="text-xs text-muted-foreground truncate">@{user.username}</p>
                                             </div>
                                             <DropdownMenuItem asChild>
                                                 <Link href="/orders">{t('common.myOrders')}</Link>
                                             </DropdownMenuItem>
                                             {isAdmin && (
-                                                <DropdownMenuItem asChild>
-                                                    <Link href="/admin">{t('common.admin')}</Link>
-                                                </DropdownMenuItem>
+                                                <>
+                                                    <DropdownMenuItem asChild>
+                                                        <Link href="/admin">{t('common.admin')}</Link>
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem asChild className="sm:hidden">
+                                                        <Link href="/admin/settings">{t('admin.settings.title')}</Link>
+                                                    </DropdownMenuItem>
+                                                </>
                                             )}
+                                            <DropdownMenuItem onClick={() => setLocale(locale === 'zh' ? 'en' : 'zh')} className="sm:hidden">
+                                                {locale === 'zh' ? t('common.english') : t('common.chinese')}
+                                            </DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
                                                 {t('common.logout')}
                                             </DropdownMenuItem>
@@ -337,7 +380,7 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                                     <Button variant="ghost" size="sm" className="h-9 gap-2" asChild>
                                         <Link href="/api/auth/signin">
                                             <LogIn className="h-4 w-4" />
-                                            {t('common.login')}
+                                            <span className="hidden sm:inline">{t('common.login')}</span>
                                         </Link>
                                     </Button>
                                 )}
