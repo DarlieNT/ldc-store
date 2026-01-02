@@ -123,9 +123,9 @@ export async function saveSiteSettings(formData: FormData) {
             })
     }
 
-    revalidatePath('/admin')
+    revalidatePath('/', 'layout')
+    revalidatePath('/admin', 'layout')
     revalidatePath('/admin/settings')
-    revalidatePath('/')
 }
 
 // Announcements
@@ -147,8 +147,9 @@ export async function createAnnouncementAction(formData: FormData) {
         updatedAt: new Date()
     })
 
-    revalidatePath('/')
-    revalidatePath('/admin')
+    revalidatePath('/', 'layout')
+    revalidatePath('/admin', 'layout')
+    revalidatePath('/admin/announcements')
 }
 
 export async function deleteAnnouncementAction(id: number) {
@@ -156,8 +157,9 @@ export async function deleteAnnouncementAction(id: number) {
 
     await db.delete(announcements).where(eq(announcements.id, id))
 
-    revalidatePath('/')
-    revalidatePath('/admin')
+    revalidatePath('/', 'layout')
+    revalidatePath('/admin', 'layout')
+    revalidatePath('/admin/announcements')
 }
 
 export async function toggleAnnouncementAction(id: number, isActive: boolean) {
@@ -167,6 +169,7 @@ export async function toggleAnnouncementAction(id: number, isActive: boolean) {
         .set({ isActive, updatedAt: new Date() })
         .where(eq(announcements.id, id))
 
-    revalidatePath('/')
-    revalidatePath('/admin')
+    revalidatePath('/', 'layout')
+    revalidatePath('/admin', 'layout')
+    revalidatePath('/admin/announcements')
 }

@@ -83,7 +83,7 @@ export function AdminProductsContent({ products, stats }: AdminProductsContentPr
     ]
 
     return (
-        <div className="space-y-8">
+        <div className="p-6 space-y-8">
             {/* Dashboard Stats */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {statCards.map((stat, i) => (

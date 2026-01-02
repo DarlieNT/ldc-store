@@ -24,6 +24,8 @@ export function SettingsContent({ settings }: SettingsContentProps) {
         try {
             await saveSiteSettings(formData)
             toast.success(t('common.success'))
+            // Force router refresh to show updated data
+            window.location.reload()
         } catch (e: any) {
             toast.error(e.message || t('common.error'))
         } finally {
@@ -32,7 +34,7 @@ export function SettingsContent({ settings }: SettingsContentProps) {
     }
 
     return (
-        <div className="space-y-8 max-w-2xl">
+        <div className="p-6 space-y-8 max-w-2xl">
             <div className="flex items-center gap-3">
                 <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
                     <Settings className="h-6 w-6 text-primary" />

@@ -4,7 +4,9 @@
       "Bash(tree:*)",
       "Bash(npx drizzle-kit push)",
       "Bash(ls:*)",
-      "Bash(npx shadcn@latest add:*)"
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(done)",
+      "Bash(cat:*)"
     ]
   }
 }

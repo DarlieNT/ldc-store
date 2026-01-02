@@ -36,12 +36,14 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
         e.preventDefault()
         setLoading(true)
 
+        const form = e.currentTarget
         try {
-            const formData = new FormData(e.currentTarget)
+            const formData = new FormData(form)
             await createAnnouncementAction(formData)
             toast.success(t('common.announcementCreated'))
+            form.reset()
             setOpen(false)
-            e.currentTarget.reset()
+            window.location.reload()
         } catch (error: any) {
             toast.error(error.message || t('common.createFailed'))
         } finally {
@@ -55,6 +57,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
         try {
             await deleteAnnouncementAction(id)
             toast.success(t('common.announcementDeleted'))
+            window.location.reload()
         } catch (error: any) {
             toast.error(error.message || t('common.deleteFailed'))
         }
@@ -64,6 +67,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
         try {
             await toggleAnnouncementAction(id, !isActive)
             toast.success(isActive ? t('common.announcementHidden') : t('common.announcementShown'))
+            window.location.reload()
         } catch (error: any) {
             toast.error(error.message || t('common.operationFailed'))
         }

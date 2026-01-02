@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { notFound } from "next/navigation"
-import { AdminSidebar } from "@/components/admin/sidebar"
+import { AppLayout } from "@/components/app-layout"
+import { getActiveAnnouncements } from "@/lib/db/queries"
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
     const session = await auth()
@@ -12,14 +13,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         return notFound()
     }
 
+    // Get announcements
+    let announcements: any[] = []
+    try {
+        announcements = await getActiveAnnouncements()
+    } catch (error) {
+        console.error('Failed to load announcements:', error)
+    }
+
     return (
-        <div className="flex min-h-screen bg-background">
-            <AdminSidebar username={user.username} avatar={user.avatar_url || undefined} />
-            <main className="flex-1 overflow-y-auto">
-                <div className="p-6 md:p-8 lg:p-10">
-                    {children}
-                </div>
-            </main>
-        </div>
+        <AppLayout user={user} isAdmin={true} announcements={announcements}>
+            {children}
+        </AppLayout>
     )
 }

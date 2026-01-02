@@ -29,7 +29,8 @@ import {
     Plus,
     Moon,
     Sun,
-    LogIn
+    LogIn,
+    Bell
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { Logo } from '@/components/icons/logo'
@@ -111,6 +112,7 @@ export function AppLayout({ children, user, isAdmin, announcements = [] }: AppLa
             items: [
                 { href: '/admin', icon: Package, label: t('common.products'), exact: true },
                 { href: '/admin/orders', icon: FileText, label: t('common.orders') },
+                { href: '/admin/announcements', icon: Bell, label: t('common.announcementManagement') },
                 { href: '/admin/settings', icon: Settings, label: t('admin.settings.title') || 'Settings' },
             ]
         })
