@@ -157,13 +157,13 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                         collapsed ? "lg:px-4 lg:justify-center px-4" : "px-4"
                     )}>
                         <Link href="/" className="flex items-center gap-2 sm:gap-3 overflow-hidden flex-1 min-w-0" onClick={() => setMobileMenuOpen(false)}>
-                            <Logo className="h-6 w-6 sm:h-7 sm:w-7 text-primary shrink-0" />
+                            <Logo className="h-6 w-6 sm:h-7 sm:w-7 text-primary shrink-0 self-center" />
                             <div className={cn(
-                                "flex flex-col transition-all duration-300 overflow-hidden min-w-0",
+                                "flex flex-col justify-center transition-all duration-300 overflow-hidden min-w-0",
                                 collapsed ? "lg:w-0 lg:opacity-0" : "w-auto opacity-100"
                             )}>
-                                <span className="font-semibold text-foreground text-sm whitespace-nowrap truncate">{settings.siteName || 'LDC Shop'}</span>
-                                <span className="text-xs text-muted-foreground whitespace-nowrap truncate">{user?.username || t('common.guest')}</span>
+                                <span className="font-semibold text-foreground text-sm whitespace-nowrap truncate leading-tight">{settings.siteName || 'LDC Shop'}</span>
+                                <span className="text-xs text-muted-foreground whitespace-nowrap truncate leading-tight">{user?.username || t('common.guest')}</span>
                             </div>
                         </Link>
                         <Button
