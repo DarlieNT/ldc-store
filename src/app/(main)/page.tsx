@@ -16,12 +16,24 @@ export default async function Home() {
     let stats = { today: 0, week: 0, month: 0, total: 0 }
     let settings: Record<string, string> = {}
 
+    // Run column migrations for existing tables
     try {
-        [products, stats, settings] = await Promise.all([
+        const { db } = await import("@/lib/db")
+        const { sql } = await import("drizzle-orm")
+        await db.execute(sql.raw(`ALTER TABLE announcements ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT FALSE`))
+    } catch (e) {
+        // Ignore if column already exists or table doesn't exist
+    }
+
+    try {
+        const result = await Promise.all([
             getActiveProducts(),
             getOrderStats(),
             getAllSiteSettings()
         ])
+        products = result[0]
+        stats = result[1]
+        settings = result[2]
     } catch (error: any) {
         const errorString = JSON.stringify(error)
         const isTableMissing =
