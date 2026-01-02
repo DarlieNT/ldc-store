@@ -47,24 +47,24 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: #fafbfc;
-  --foreground: #1a1a2e;
+  --radius: 0.5rem;
+  --background: #f7f8fa;
+  --foreground: #1f2937;
   --card: #ffffff;
-  --card-foreground: #1a1a2e;
+  --card-foreground: #1f2937;
   --popover: #ffffff;
-  --popover-foreground: #1a1a2e;
+  --popover-foreground: #1f2937;
   --primary: #6366f1;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #475569;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
+  --secondary: #f3f4f6;
+  --secondary-foreground: #374151;
+  --muted: #f9fafb;
+  --muted-foreground: #6b7280;
   --accent: #f0f4ff;
   --accent-foreground: #6366f1;
   --destructive: #ef4444;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
   --ring: #6366f1;
   --chart-1: #6366f1;
   --chart-2: #10b981;
@@ -74,26 +74,26 @@
   --success: #10b981;
   --warning: #f59e0b;
   --sidebar: #ffffff;
-  --sidebar-foreground: #475569;
+  --sidebar-foreground: #6b7280;
   --sidebar-primary: #6366f1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0f4ff;
+  --sidebar-accent: #f9fafb;
   --sidebar-accent-foreground: #6366f1;
-  --sidebar-border: #f1f5f9;
+  --sidebar-border: #f3f4f6;
   --sidebar-ring: #6366f1;
 }
 
 .dark {
   --background: #0f172a;
-  --foreground: #f8fafc;
+  --foreground: #f1f5f9;
   --card: #1e293b;
-  --card-foreground: #f8fafc;
+  --card-foreground: #f1f5f9;
   --popover: #1e293b;
-  --popover-foreground: #f8fafc;
+  --popover-foreground: #f1f5f9;
   --primary: #818cf8;
   --primary-foreground: #0f172a;
   --secondary: #334155;
-  --secondary-foreground: #f8fafc;
+  --secondary-foreground: #f1f5f9;
   --muted: #334155;
   --muted-foreground: #94a3b8;
   --accent: #312e81;
@@ -126,6 +126,11 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
   }
 }
 
@@ -148,8 +153,8 @@
 
 /* Smooth scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -158,7 +163,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -169,10 +174,23 @@
 :focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+  border-radius: 0.25rem;
 }
 
 /* Selection color */
 ::selection {
   background: var(--primary);
   color: var(--primary-foreground);
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Remove transitions for specific elements */
+button, a, [role="button"] {
+  transition-property: all;
 }

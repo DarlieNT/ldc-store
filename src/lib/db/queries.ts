@@ -111,3 +111,36 @@ export async function setSiteSetting(key: string, value: string): Promise<void> 
         });
 }
 
+// Order Stats
+export async function getOrderStats() {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekStart = new Date(todayStart);
+    weekStart.setDate(weekStart.getDate() - 7);
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    try {
+        const allOrders = await db.query.orders.findMany({
+            where: eq(orders.status, 'delivered')
+        });
+
+        const todayOrders = allOrders.filter(o => o.paidAt && new Date(o.paidAt) >= todayStart);
+        const weekOrders = allOrders.filter(o => o.paidAt && new Date(o.paidAt) >= weekStart);
+        const monthOrders = allOrders.filter(o => o.paidAt && new Date(o.paidAt) >= monthStart);
+
+        return {
+            today: todayOrders.length,
+            week: weekOrders.length,
+            month: monthOrders.length,
+            total: allOrders.length
+        };
+    } catch (error) {
+        return {
+            today: 0,
+            week: 0,
+            month: 0,
+            total: 0
+        };
+    }
+}
+

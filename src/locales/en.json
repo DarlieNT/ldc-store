@@ -10,6 +10,12 @@
         "loggedInAs": "Logged in as",
         "dashboard": "Dashboard",
         "myOrders": "My Orders",
+        "home": "Home",
+        "market": "Market",
+        "products": "Products",
+        "orders": "Orders",
+        "myAccount": "My Account",
+        "search": "Search",
         "loading": "Loading...",
         "error": "Error",
         "success": "Success",
@@ -154,8 +160,7 @@
         }
     },
     "footer": {
-        "disclaimer": "Built for Linux DO ecosystem. Not an official Linux DO service.",
-        "poweredBy": "Powered by chatgpt.org.uk"
+        "disclaimer": "Built for Linux DO ecosystem. Not an official Linux DO service."
     },
     "language": {
         "switch": "Language",

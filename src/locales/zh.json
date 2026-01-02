@@ -10,6 +10,12 @@
         "loggedInAs": "当前登录",
         "dashboard": "控制台",
         "myOrders": "我的订单",
+        "home": "首页",
+        "market": "集市",
+        "products": "商品",
+        "orders": "订单",
+        "myAccount": "我的",
+        "search": "搜索",
         "loading": "加载中...",
         "error": "错误",
         "success": "成功",
@@ -154,8 +160,7 @@
         }
     },
     "footer": {
-        "disclaimer": "为 Linux DO 生态打造，非官方服务",
-        "poweredBy": "由 chatgpt.org.uk 驱动"
+        "disclaimer": "为 Linux DO 生态打造，非官方服务"
     },
     "language": {
         "switch": "语言",
