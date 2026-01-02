@@ -3,7 +3,7 @@
 import { useI18n } from "@/lib/i18n/context"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { RefundButton } from "@/components/admin/refund-button"
 import { CopyButton } from "@/components/copy-button"
 import { ExternalLink } from "lucide-react"
@@ -42,15 +42,16 @@ export function AdminOrdersContent({ orders }: { orders: Order[] }) {
     }
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">{t('admin.orders.title')}</h2>
-                    <p className="text-muted-foreground text-sm mt-1">{orders.length} orders</p>
+                <div className="min-w-0">
+                    <h2 className="text-lg sm:text-2xl font-bold tracking-tight truncate">{t('admin.orders.title')}</h2>
+                    <p className="text-muted-foreground text-xs sm:text-sm mt-1">{orders.length} orders</p>
                 </div>
             </div>
 
-            <Card className="border-border/50 shadow-sm overflow-hidden">
+            {/* Desktop Table View */}
+            <Card className="border-border/50 shadow-sm overflow-hidden hidden md:block">
                 <Table>
                     <TableHeader>
                         <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -121,6 +122,64 @@ export function AdminOrdersContent({ orders }: { orders: Order[] }) {
                     </TableBody>
                 </Table>
             </Card>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-3">
+                {orders.map(order => (
+                    <Card key={order.orderId} className="border-border/50 shadow-sm">
+                        <CardContent className="p-4 space-y-3">
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold text-sm mb-1 truncate">{order.productName}</h3>
+                                    <p className="font-mono text-xs text-muted-foreground">
+                                        {order.orderId.slice(0, 12)}...
+                                    </p>
+                                </div>
+                                <div className="text-right shrink-0">
+                                    <p className="font-semibold text-primary text-sm">{Number(order.amount)} LDC</p>
+                                    <Badge className={`uppercase text-[10px] mt-1 ${getStatusBadgeStyle(order.status)}`}>
+                                        {getStatusText(order.status)}
+                                    </Badge>
+                                </div>
+                            </div>
+
+                            {order.username && (
+                                <div className="flex items-center gap-2 pt-2 border-t border-border/40">
+                                    <span className="text-xs text-muted-foreground">{t('admin.orders.user')}:</span>
+                                    <a
+                                        href={`https://linux.do/u/${order.username}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                                    >
+                                        {order.username}
+                                        <ExternalLink className="h-3 w-3" />
+                                    </a>
+                                </div>
+                            )}
+
+                            {order.cardKey && (
+                                <div className="flex items-center justify-between pt-2 border-t border-border/40">
+                                    <span className="text-xs text-muted-foreground">{t('admin.orders.cardKey')}:</span>
+                                    <CopyButton text={order.cardKey} truncate maxLength={12} />
+                                </div>
+                            )}
+
+                            <div className="flex items-center justify-between pt-2 border-t border-border/40 text-xs text-muted-foreground">
+                                <span>{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : ''}</span>
+                                <RefundButton order={order} />
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+                {orders.length === 0 && (
+                    <Card className="border-border/50 border-dashed">
+                        <CardContent className="py-12 text-center text-muted-foreground text-sm">
+                            No orders found.
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
         </div>
     )
 }

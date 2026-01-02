@@ -81,7 +81,12 @@
         "enterAnnouncementContent": "输入公告内容",
         "announcementPinned": "公告已置顶",
         "announcementUnpinned": "已取消置顶",
-        "pinned": "置顶"
+        "pinned": "置顶",
+        "editAnnouncement": "编辑公告",
+        "announcementUpdated": "公告已更新",
+        "updateFailed": "更新失败",
+        "update": "更新",
+        "updating": "更新中..."
     },
     "home": {
         "title": "欢迎来到 LDC 商店",

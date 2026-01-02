@@ -14,8 +14,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
-import { Plus, Trash2, Eye, EyeOff, Pin, PinOff } from 'lucide-react'
-import { createAnnouncementAction, deleteAnnouncementAction, toggleAnnouncementAction, togglePinAnnouncementAction } from '@/actions/admin'
+import { Plus, Trash2, Eye, EyeOff, Pin, PinOff, Pencil } from 'lucide-react'
+import { createAnnouncementAction, updateAnnouncementAction, deleteAnnouncementAction, toggleAnnouncementAction, togglePinAnnouncementAction } from '@/actions/admin'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
@@ -34,6 +34,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
     const router = useRouter()
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [editingAnnouncement, setEditingAnnouncement] = useState<Announcement | null>(null)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -42,16 +43,32 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
         const form = e.currentTarget
         try {
             const formData = new FormData(form)
-            await createAnnouncementAction(formData)
-            toast.success(t('common.announcementCreated'))
+            if (editingAnnouncement) {
+                await updateAnnouncementAction(editingAnnouncement.id, formData)
+                toast.success(t('common.announcementUpdated') || 'Announcement updated successfully')
+                setEditingAnnouncement(null)
+            } else {
+                await createAnnouncementAction(formData)
+                toast.success(t('common.announcementCreated'))
+            }
             form.reset()
             setOpen(false)
             router.refresh()
         } catch (error: any) {
-            toast.error(error.message || t('common.createFailed'))
+            toast.error(error.message || (editingAnnouncement ? t('common.updateFailed') : t('common.createFailed')))
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleEdit = (announcement: Announcement) => {
+        setEditingAnnouncement(announcement)
+        setOpen(true)
+    }
+
+    const handleCloseDialog = () => {
+        setOpen(false)
+        setEditingAnnouncement(null)
     }
 
     const handleDelete = async (id: number) => {
@@ -87,55 +104,61 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
     }
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold">{t('common.announcementManagement')}</h1>
-                    <p className="text-muted-foreground text-sm mt-1">{t('common.manageSystemAnnouncements')}</p>
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+            <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                    <h1 className="text-lg sm:text-2xl font-bold truncate">{t('common.announcementManagement')}</h1>
+                    <p className="text-muted-foreground text-xs sm:text-sm mt-1">{t('common.manageSystemAnnouncements')}</p>
                 </div>
 
-                <Dialog open={open} onOpenChange={setOpen}>
+                <Dialog open={open} onOpenChange={handleCloseDialog}>
                     <DialogTrigger asChild>
-                        <Button>
-                            <Plus className="h-4 w-4 mr-2" />
-                            {t('common.createAnnouncement')}
+                        <Button className="h-9 sm:h-10 shrink-0" onClick={() => setEditingAnnouncement(null)}>
+                            <Plus className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">{t('common.createAnnouncement')}</span>
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
+                    <DialogContent className="max-w-2xl mx-4">
                         <DialogHeader>
-                            <DialogTitle>{t('common.createAnnouncement')}</DialogTitle>
+                            <DialogTitle>
+                                {editingAnnouncement ? (t('common.editAnnouncement') || 'Edit Announcement') : t('common.createAnnouncement')}
+                            </DialogTitle>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
                                 <label className="text-sm font-medium mb-2 block">{t('common.title')}</label>
                                 <Input
                                     name="title"
+                                    defaultValue={editingAnnouncement?.title || ''}
                                     placeholder={t('common.enterAnnouncementTitle')}
                                     required
                                     disabled={loading}
+                                    key={editingAnnouncement?.id || 'new'}
                                 />
                             </div>
                             <div>
                                 <label className="text-sm font-medium mb-2 block">{t('common.content')}</label>
                                 <Textarea
                                     name="content"
+                                    defaultValue={editingAnnouncement?.content || ''}
                                     placeholder={t('common.enterAnnouncementContent')}
                                     rows={6}
                                     required
                                     disabled={loading}
+                                    key={editingAnnouncement?.id || 'new'}
                                 />
                             </div>
                             <div className="flex justify-end gap-2">
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => setOpen(false)}
+                                    onClick={handleCloseDialog}
                                     disabled={loading}
                                 >
                                     {t('common.cancel')}
                                 </Button>
                                 <Button type="submit" disabled={loading}>
-                                    {loading ? t('common.creating') : t('common.create')}
+                                    {loading ? (editingAnnouncement ? (t('common.updating') || 'Updating...') : t('common.creating')) : (editingAnnouncement ? (t('common.update') || 'Update') : t('common.create'))}
                                 </Button>
                             </div>
                         </form>
@@ -150,25 +173,25 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
                     </CardContent>
                 </Card>
             ) : (
-                <div className="grid gap-4">
+                <div className="grid gap-3 sm:gap-4">
                     {announcements.map((announcement) => (
                         <Card key={announcement.id}>
-                            <CardContent className="p-6">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex-1 space-y-2">
-                                        <div className="flex items-center gap-3">
-                                            <h3 className="font-semibold text-lg">{announcement.title}</h3>
+                            <CardContent className="p-4 sm:p-6">
+                                <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                                    <div className="flex-1 space-y-2 min-w-0">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <h3 className="font-semibold text-base sm:text-lg truncate">{announcement.title}</h3>
                                             {announcement.isPinned && (
-                                                <Badge variant="default" className="bg-amber-500 hover:bg-amber-600">
+                                                <Badge variant="default" className="bg-amber-500 hover:bg-amber-600 shrink-0 text-xs">
                                                     <Pin className="h-3 w-3 mr-1" />
                                                     {t('common.pinned')}
                                                 </Badge>
                                             )}
-                                            <Badge variant={announcement.isActive ? 'default' : 'secondary'}>
+                                            <Badge variant={announcement.isActive ? 'default' : 'secondary'} className="text-xs">
                                                 {announcement.isActive ? t('common.visible') : t('common.hidden')}
                                             </Badge>
                                         </div>
-                                        <p className="text-muted-foreground whitespace-pre-wrap">
+                                        <p className="text-muted-foreground text-sm whitespace-pre-wrap">
                                             {announcement.content}
                                         </p>
                                         {announcement.createdAt && (
@@ -177,10 +200,11 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
                                             </p>
                                         )}
                                     </div>
-                                    <div className="flex items-center gap-2 shrink-0">
+                                    <div className="flex sm:flex-col items-center gap-2 w-full sm:w-auto shrink-0">
                                         <Button
                                             variant="outline"
                                             size="icon"
+                                            className="h-9 w-9"
                                             onClick={() => handleTogglePin(announcement.id, announcement.isPinned || false)}
                                             title={announcement.isPinned ? t('common.announcementUnpinned') : t('common.announcementPinned')}
                                         >
@@ -193,6 +217,7 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
                                         <Button
                                             variant="outline"
                                             size="icon"
+                                            className="h-9 w-9"
                                             onClick={() => handleToggle(announcement.id, announcement.isActive || false)}
                                         >
                                             {announcement.isActive ? (
@@ -204,6 +229,16 @@ export function AnnouncementsContent({ announcements }: { announcements: Announc
                                         <Button
                                             variant="outline"
                                             size="icon"
+                                            className="h-9 w-9"
+                                            onClick={() => handleEdit(announcement)}
+                                            title={t('common.edit') || 'Edit'}
+                                        >
+                                            <Pencil className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            className="h-9 w-9"
                                             onClick={() => handleDelete(announcement.id)}
                                         >
                                             <Trash2 className="h-4 w-4" />

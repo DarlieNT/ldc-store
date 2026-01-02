@@ -35,14 +35,14 @@ export function SettingsContent({ settings }: SettingsContentProps) {
     }
 
     return (
-        <div className="p-6 space-y-8 max-w-2xl">
+        <div className="p-4 sm:p-6 space-y-6 sm:space-y-8 max-w-2xl">
             <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Settings className="h-6 w-6 text-primary" />
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                 </div>
-                <div>
-                    <h1 className="text-2xl font-bold tracking-tight">{t('admin.settings.title')}</h1>
-                    <p className="text-muted-foreground text-sm">{t('admin.settings.subtitle')}</p>
+                <div className="min-w-0">
+                    <h1 className="text-lg sm:text-2xl font-bold tracking-tight truncate">{t('admin.settings.title')}</h1>
+                    <p className="text-muted-foreground text-xs sm:text-sm">{t('admin.settings.subtitle')}</p>
                 </div>
             </div>
 

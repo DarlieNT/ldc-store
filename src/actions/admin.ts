@@ -152,6 +152,25 @@ export async function createAnnouncementAction(formData: FormData) {
     revalidatePath('/admin/announcements')
 }
 
+export async function updateAnnouncementAction(id: number, formData: FormData) {
+    await checkAdmin()
+
+    const title = formData.get('title') as string
+    const content = formData.get('content') as string
+
+    if (!title || !content) {
+        throw new Error('Title and content are required')
+    }
+
+    await db.update(announcements)
+        .set({ title, content, updatedAt: new Date() })
+        .where(eq(announcements.id, id))
+
+    revalidatePath('/', 'layout')
+    revalidatePath('/admin', 'layout')
+    revalidatePath('/admin/announcements')
+}
+
 export async function deleteAnnouncementAction(id: number) {
     await checkAdmin()
 

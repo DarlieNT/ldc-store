@@ -29,7 +29,7 @@ interface Stats {
     total: number
 }
 
-function ProductBuyButton({ productId, disabled }: { productId: string; disabled?: boolean }) {
+function ProductBuyButton({ productId, disabled, fullWidth }: { productId: string; disabled?: boolean; fullWidth?: boolean }) {
     const [loading, setLoading] = useState(false)
     const { t } = useI18n()
 
@@ -63,7 +63,10 @@ function ProductBuyButton({ productId, disabled }: { productId: string; disabled
     return (
         <Button
             size="sm"
-            className="bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100"
+            className={cn(
+                "bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 text-xs h-8",
+                fullWidth && "w-full"
+            )}
             onClick={handleBuy}
             disabled={disabled || loading}
         >
@@ -286,60 +289,50 @@ export function DashboardContent({
                             {products.map((product) => {
                                 const inStock = product.stockCount > 0
                                 return (
-                                    <Card key={product.id} className="border-border/40">
-                                        <CardContent className="p-4">
+                                    <Card key={product.id} className="border-border/40 overflow-hidden">
+                                        <CardContent className="p-3">
                                             <div className="flex gap-3">
-                                                <div className="h-16 w-16 rounded-lg bg-muted/50 overflow-hidden shrink-0">
-                                                    <img
-                                                        src={product.image || `https://api.dicebear.com/7.x/shapes/svg?seed=${product.id}`}
-                                                        alt={product.name}
-                                                        className="h-full w-full object-cover"
-                                                    />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
+                                                <Link href={`/buy/${product.id}`} className="shrink-0">
+                                                    <div className="h-20 w-20 rounded-lg bg-muted/50 overflow-hidden">
+                                                        <img
+                                                            src={product.image || `https://api.dicebear.com/7.x/shapes/svg?seed=${product.id}`}
+                                                            alt={product.name}
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    </div>
+                                                </Link>
+                                                <div className="flex-1 min-w-0 flex flex-col">
                                                     <Link
                                                         href={`/buy/${product.id}`}
-                                                        className="font-medium text-foreground hover:text-primary transition-colors line-clamp-1 block mb-1"
+                                                        className="font-medium text-sm text-foreground hover:text-primary transition-colors line-clamp-2 mb-1"
                                                     >
                                                         {product.name}
                                                     </Link>
-                                                    <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
-                                                        {product.description || t('buy.noDescription')}
-                                                    </p>
-                                                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                                                    <div className="flex items-center gap-2 text-xs mb-2">
                                                         <span className="font-semibold text-primary">{Number(product.price)} LDC</span>
-                                                        <span className="text-muted-foreground">·</span>
-                                                        <span className={inStock ? "text-foreground" : "text-destructive"}>
-                                                            {t('common.stock')}: {product.stockCount}
-                                                        </span>
-                                                        <span className="text-muted-foreground">·</span>
-                                                        <span className="text-muted-foreground">
-                                                            {t('common.sold')}: {product.soldCount}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2 mt-3">
                                                         <Badge
                                                             variant={inStock ? "default" : "secondary"}
                                                             className={cn(
-                                                                "text-xs",
+                                                                "text-[10px] h-4 px-1.5",
                                                                 inStock
                                                                     ? "bg-emerald-500/10 text-emerald-600 border-0"
                                                                     : "bg-gray-500/10 text-gray-500 border-0"
                                                             )}
                                                         >
-                                                            {inStock ? t('common.inStock') : t('common.outOfStock')}
+                                                            {inStock ? `${product.stockCount} ${t('common.inStock')}` : t('common.outOfStock')}
                                                         </Badge>
-                                                        <div className="flex-1"></div>
+                                                    </div>
+                                                    <div className="mt-auto">
                                                         {isLoggedIn ? (
                                                             inStock ? (
-                                                                <ProductBuyButton productId={product.id} />
+                                                                <ProductBuyButton productId={product.id} fullWidth />
                                                             ) : (
-                                                                <Button size="sm" variant="secondary" disabled className="text-xs">
+                                                                <Button size="sm" variant="secondary" disabled className="w-full text-xs h-8">
                                                                     {t('common.outOfStock')}
                                                                 </Button>
                                                             )
                                                         ) : (
-                                                            <Button size="sm" asChild className="bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 text-xs">
+                                                            <Button size="sm" asChild className="w-full bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 text-xs h-8">
                                                                 <Link href="/api/auth/signin">
                                                                     {t('common.buyNow')}
                                                                 </Link>

@@ -81,7 +81,12 @@
         "enterAnnouncementContent": "Enter announcement content",
         "announcementPinned": "Announcement pinned",
         "announcementUnpinned": "Announcement unpinned",
-        "pinned": "Pinned"
+        "pinned": "Pinned",
+        "editAnnouncement": "Edit Announcement",
+        "announcementUpdated": "Announcement updated successfully",
+        "updateFailed": "Failed to update announcement",
+        "update": "Update",
+        "updating": "Updating..."
     },
     "home": {
         "title": "Welcome to LDC Shop",

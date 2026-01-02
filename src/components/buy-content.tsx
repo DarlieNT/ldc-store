@@ -28,9 +28,9 @@ export function BuyContent({ product, stockCount, isLoggedIn }: BuyContentProps)
     const { t } = useI18n()
 
     return (
-        <main className="container py-10 md:py-16">
+        <main className="container py-6 sm:py-10 md:py-16 px-4">
             <div className="mx-auto max-w-4xl">
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
                     <div className="space-y-4">
                         <div className="aspect-square bg-card rounded-2xl overflow-hidden border border-border/50 shadow-sm">
                             <img
@@ -42,7 +42,7 @@ export function BuyContent({ product, stockCount, isLoggedIn }: BuyContentProps)
                         {product.category && product.category !== 'general' && (
                             <div className="flex items-center gap-2">
                                 <Tag className="h-4 w-4 text-muted-foreground" />
-                                <Badge variant="secondary" className="capitalize">
+                                <Badge variant="secondary" className="capitalize text-xs">
                                     {product.category}
                                 </Badge>
                             </div>
@@ -50,13 +50,13 @@ export function BuyContent({ product, stockCount, isLoggedIn }: BuyContentProps)
                     </div>
 
                     <Card className="border-border/50 shadow-sm h-fit">
-                        <CardHeader className="space-y-4 pb-4">
+                        <CardHeader className="space-y-4 pb-4 p-4 sm:p-6">
                             <div>
-                                <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
+                                <h1 className="text-xl sm:text-2xl font-bold mb-2">{product.name}</h1>
                                 <div className="flex items-center gap-3">
                                     <Badge
                                         variant={stockCount > 0 ? "outline" : "destructive"}
-                                        className={stockCount > 0 ? "bg-emerald-500/10 text-emerald-600 border-0" : ""}
+                                        className={stockCount > 0 ? "bg-emerald-500/10 text-emerald-600 border-0 text-xs" : "text-xs"}
                                     >
                                         <Package className="h-3 w-3 mr-1" />
                                         {stockCount > 0 ? `${t('common.stock')}: ${stockCount}` : t('common.outOfStock')}
@@ -64,23 +64,23 @@ export function BuyContent({ product, stockCount, isLoggedIn }: BuyContentProps)
                                 </div>
                             </div>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-bold text-primary">{Number(product.price)}</span>
-                                <span className="text-lg text-muted-foreground">{t('common.credits')}</span>
+                                <span className="text-3xl sm:text-4xl font-bold text-primary">{Number(product.price)}</span>
+                                <span className="text-base sm:text-lg text-muted-foreground">{t('common.credits')}</span>
                             </div>
                         </CardHeader>
 
                         <Separator />
 
-                        <CardContent className="py-6">
+                        <CardContent className="py-4 sm:py-6 p-4 sm:p-6">
                             <h3 className="text-sm font-medium text-muted-foreground mb-3">Description</h3>
-                            <p className="text-foreground leading-relaxed whitespace-pre-wrap break-words">
+                            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words">
                                 {product.description || t('buy.noDescription')}
                             </p>
                         </CardContent>
 
                         <Separator />
 
-                        <CardFooter className="pt-6 flex-col gap-4">
+                        <CardFooter className="pt-4 sm:pt-6 flex-col gap-4 p-4 sm:p-6">
                             {isLoggedIn ? (
                                 stockCount > 0 ? (
                                     <BuyButton productId={product.id} />

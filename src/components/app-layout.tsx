@@ -156,20 +156,20 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                         "h-14 flex items-center justify-between border-b border-border/40 transition-all duration-300",
                         collapsed ? "lg:px-4 lg:justify-center px-4" : "px-4"
                     )}>
-                        <Link href="/" className="flex items-center gap-3 overflow-hidden" onClick={() => setMobileMenuOpen(false)}>
-                            <Logo className="h-7 w-7 text-primary shrink-0" />
+                        <Link href="/" className="flex items-center gap-2 sm:gap-3 overflow-hidden flex-1 min-w-0" onClick={() => setMobileMenuOpen(false)}>
+                            <Logo className="h-6 w-6 sm:h-7 sm:w-7 text-primary shrink-0" />
                             <div className={cn(
-                                "flex flex-col transition-all duration-300 overflow-hidden",
+                                "flex flex-col transition-all duration-300 overflow-hidden min-w-0",
                                 collapsed ? "lg:w-0 lg:opacity-0" : "w-auto opacity-100"
                             )}>
-                                <span className="font-semibold text-foreground text-sm whitespace-nowrap">{settings.siteName || 'LDC Shop'}</span>
-                                <span className="text-xs text-muted-foreground whitespace-nowrap">{user?.username || t('common.guest')}</span>
+                                <span className="font-semibold text-foreground text-sm whitespace-nowrap truncate">{settings.siteName || 'LDC Shop'}</span>
+                                <span className="text-xs text-muted-foreground whitespace-nowrap truncate">{user?.username || t('common.guest')}</span>
                             </div>
                         </Link>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="lg:hidden h-8 w-8"
+                            className="lg:hidden h-8 w-8 shrink-0"
                             onClick={() => setMobileMenuOpen(false)}
                         >
                             <X className="h-4 w-4" />
@@ -262,23 +262,23 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                     collapsed ? "lg:ml-[68px]" : "lg:ml-[220px]"
                 )}>
                     {/* Header */}
-                    <header className="sticky top-0 z-30 h-14 bg-background/80 backdrop-blur-md border-b border-border/40">
-                        <div className="h-full px-4 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
+                    <header className="sticky top-0 z-30 h-14 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border/40">
+                        <div className="h-full px-3 sm:px-4 md:px-6 flex items-center justify-between gap-2">
                             {/* Mobile Menu Button */}
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="lg:hidden h-9 w-9 shrink-0"
+                                className="lg:hidden h-9 w-9 shrink-0 -ml-2"
                                 onClick={() => setMobileMenuOpen(true)}
                             >
                                 <Menu className="h-5 w-5" />
                             </Button>
 
-                            {/* Search */}
-                            <div className="flex-1 max-w-md">
+                            {/* Search - Hidden on very small screens */}
+                            <div className="hidden sm:flex flex-1 max-w-md">
                                 <div
                                     className={cn(
-                                        "flex items-center gap-2 h-9 px-3 rounded-lg border transition-all duration-200",
+                                        "flex items-center gap-2 h-9 px-3 rounded-lg border transition-all duration-200 w-full",
                                         searchFocused
                                             ? "border-primary bg-background shadow-sm"
                                             : "border-transparent bg-muted/50 hover:bg-muted"
@@ -292,11 +292,14 @@ export function AppLayout({ children, user, isAdmin, announcements = [], setting
                                         onFocus={() => setSearchFocused(true)}
                                         onBlur={() => setSearchFocused(false)}
                                     />
-                                    <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground">
+                                    <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground">
                                         ⌘K
                                     </kbd>
                                 </div>
                             </div>
+
+                            {/* Spacer for mobile when search is hidden */}
+                            <div className="sm:hidden flex-1"></div>
 
                             {/* Actions */}
                             <div className="flex items-center gap-0.5 sm:gap-1">
